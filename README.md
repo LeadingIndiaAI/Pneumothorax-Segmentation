@@ -8,12 +8,13 @@
   segmenting out the affected region becomes
   cumbersome due to the complex details and
   multi-dimensional features.
-# DATASET
+## DATASET
 Here is the link of [dataset.](https://www.kaggle.com/c/siim-acr-pneumothorax-segmentation/data)
 ```
 Note:Dataset is downloaded using an api.External official link for direct download may be provided by kaggle in future. 
 ```
-# Prerequisite
+## Prerequisite
+Python version used:  python 3.6
 ### Commands:
 * ```pip install tensorflow-gpu==1.8```
 * ```pip install pandas```
@@ -23,26 +24,26 @@ Note:Dataset is downloaded using an api.External official link for direct downlo
 * ```pip install pillow```
 script.sh is included in files for linux installation.
 
-# Models
+## Models
 * Mask Rcnn
 * Unet
   * Xnet 
 
-# Achievements
-| Model | Learning Rate |Accuracy |
+## Achievements
+| Model | Learning Rate | Accuracy* |
 | ----- | -------- | ------- |
 | Unet  | 0.000001 | 0.7886  |
 | Maskrcnn| 0.0012 | 0.7929  |
 
-```
-*accuracry is as per submission using dice-coefficient.. more info [here](https://www.kaggle.com/c/siim-acr-pneumothorax-segmentation/overview/evaluation)
-```
-# Conclusion
+ *accuracy is as per submission using dice-coefficient.. more info [here](https://www.kaggle.com/c/siim-acr-pneumothorax-segmentation/overview/evaluation)
+
+## Conclusion
 - [x] Unet implimentation
 - [x] Mask Rcnn imlplimenation
 - [ ] To use other models and architecture
-# Common error
+## Common error
 if you are facing trouble in installing python opencv then this may be helpful
 ```bash
 apt update && apt install -y libsm6 libxext6 libxrender-dev git unzip 
+apt-get install libxrender1
 ```
