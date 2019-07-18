@@ -2,8 +2,6 @@
 '''
 Pneumothorax Detection using Mask_RCNN. Competiton hosted by 'Society for Imaging Informatics in Medicine (SIIM)' on https://www.kaggle.com
 Competition Link: https://www.kaggle.com/c/siim-acr-pneumothorax-segmentation
-Code credits: https://www.kaggle.com/hmendonca/mask-rcnn-and-medical-transfer-learning-siim-acr
-
 '''
 
 
@@ -22,6 +20,8 @@ from imgaug import augmenters as iaa
 from tqdm import tqdm, tqdm_notebook
 import pandas as pd 
 import glob
+
+#__________________DEFINING__FUCNTIONS_________________
 
 def mask2rle(img, width, height):
     rle = []
@@ -300,6 +300,8 @@ model.load_weights(WEIGHTS_PATH, by_name=True, exclude=["mrcnn_class_logits", "m
 LEARNING_RATE = 0.0006
 
 
+#__________________MODEL__TRAINING_________________
+#              three phases
 model.train(dataset_train, dataset_val,
             learning_rate=LEARNING_RATE*2,
             epochs=30,
