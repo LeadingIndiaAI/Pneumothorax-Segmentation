@@ -2,8 +2,6 @@
 '''
 Pneumothorax Detection using Mask_RCNN. Competiton hosted by 'Society for Imaging Informatics in Medicine (SIIM)' on https://www.kaggle.com
 Competition Link: https://www.kaggle.com/c/siim-acr-pneumothorax-segmentation
-Code credits: https://www.kaggle.com/soumikrakshit/pneumothorax-segmentation-using-unet-in-tensorflow
-
 '''
 
 
