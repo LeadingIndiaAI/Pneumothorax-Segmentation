@@ -24,9 +24,18 @@ from keras.callbacks import ModelCheckpoint, LearningRateScheduler, ReduceLROnPl
 from keras.utils.vis_utils import model_to_dot
 from keras import backend as K
 
+
+#__________________DECLARATIONS________________________
+
+
 TRAIN_SEED = randint(1, 1000)
 VALIDATION_SEED = randint(1, 1000)
+#IMG_size=1024*1024,channels=1(blackandwhite),
+#epochs used=200(with callbacks including early stopping)
+#optimizer=Adam,lr=0.000000001
 
+
+#__________________DEFINING__GENERATORS_________________
 
 train_image_data_generator = ImageDataGenerator(
     width_shift_range = 0.1,
@@ -35,13 +44,12 @@ train_image_data_generator = ImageDataGenerator(
     zoom_range = 0.1,
     rescale = 1.0 / 255.0
 ).flow_from_directory(
-    ".../PTD1024/train_img",
+    ".../PTD1024/train_img",#PASS DIRECTORY FOR TRAINING IMAGE
     target_size = (1024, 1024),
     color_mode = 'grayscale',
     batch_size = 1,
     seed = TRAIN_SEED
 )
-
 train_mask_data_generator = ImageDataGenerator(
     width_shift_range = 0.1,
     height_shift_range = 0.1,
@@ -49,29 +57,29 @@ train_mask_data_generator = ImageDataGenerator(
     zoom_range = 0.1,
     rescale = 1.0 / 255.0
 ).flow_from_directory(
-    ".../PTD1024/train_mask",
+    ".../PTD1024/train_mask",#PASS DIRECTORY FOR TRAINING MASKS
     target_size = (1024, 1024),
     color_mode = 'grayscale',
     batch_size = 1,
     seed = TRAIN_SEED
 )
-
 validation_image_data_generator = ImageDataGenerator(rescale = 1.0 / 255.0).flow_from_directory(
-    ".../PTD1024/train_img",
+    ".../PTD1024/train_img",#PASS DIRECTORY FOR VALIDATION IMAGE
     target_size = (1024, 1024),
     color_mode = 'grayscale',
     batch_size = 1,
     seed = VALIDATION_SEED,
 )
-
 validation_mask_data_generator = ImageDataGenerator(rescale = 1.0 / 255.0).flow_from_directory(
-    ".../PTD1024/train_mask",
+    ".../PTD1024/train_mask",#PASS DIRECTORY FOR VALIDATION MASK
     target_size = (1024, 1024),
     color_mode = 'grayscale',
     batch_size = 1,
     seed = VALIDATION_SEED,
 )
 
+
+#__________________DEFINING__FUCNTIONS_________________
 
 def mask_to_rle(img, width, height):
     rle = []
@@ -99,8 +107,6 @@ def mask_to_rle(img, width, height):
             currentPixel+=1
     return " " + " ".join(rle)
 
-
-
 def dice_coef(y_true, y_pred):
     y_true_f = K.flatten(y_true)
     y_pred_f = K.flatten(y_pred)
@@ -110,7 +116,8 @@ def dice_coef(y_true, y_pred):
 def dice_coef_loss(y_true, y_pred):
     return -dice_coef(y_true, y_pred)
 
-
+#__________________DRIVING__FUCNTION_________________
+#BUILDING UNET
 def build_unet(shape):
     input_layer = Input(shape = shape)
     
@@ -153,10 +160,15 @@ def build_unet(shape):
     
     return Model(input_layer, conv10)
 
+
+#__________________COMPILING__UNET_________________
+
 model = build_unet((1024, 1024, 1))
 model.summary()
 model.compile(optimizer =Adam(lr=0.000000001), loss = dice_coef_loss, metrics = [dice_coef, 'binary_accuracy'])
 
+
+#________________DEFINING__CALLBACKS_________________
 
 
 weight_saver = ModelCheckpoint(
@@ -180,6 +192,8 @@ early = EarlyStopping(
     patience = 15
 )
 
+#____DEFINING__GENERATORS__WITH___MASKS__AS__Y_BACTH_____
+
 def train_data_generator(image_generator, mask_generator):
     while True:
         x_batch, _ = train_image_data_generator.next()
@@ -193,6 +207,10 @@ def validation_data_generator(image_generator, mask_generator):
         yield x_batch, y_batch
 
 
+#__________________TRAINING__MODEL_________________
+ '''
+     Don't forget to change compiling and inputs as per your image size and requirements 
+ '''
 history = model.fit_generator(
     train_data_generator(
         train_image_data_generator,
@@ -215,7 +233,8 @@ history = model.fit_generator(
 
 
 
-
+#_______DEFINING__FUCNTIONS__FOR___SUBMISSION_________
+#             specifically this challenge only 
 rle, image_id = [], []
 for file in tqdm_notebook(glob('.../PTD1024/test_img/test/*')):
     image = imread(file).reshape(1, 1024, 1024, 1)
@@ -236,5 +255,5 @@ submission.head()
 
 
 submission.to_csv('submission.csv', index = False)
-model.save('model.h5')
+model.save('modelUnet.h5')
 
