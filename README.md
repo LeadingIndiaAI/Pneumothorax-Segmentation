@@ -22,7 +22,8 @@ Python version used:  python 3.6
 * ```pip install keras```
 * ```pip install tqdm```
 * ```pip install pillow```
-script.sh is included in files for linux installation.
+
+requirement.sh is included in files for linux installation.
 
 ## Models
 * Mask Rcnn
